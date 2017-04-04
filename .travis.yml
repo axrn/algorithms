@@ -1,7 +1,16 @@
 language: python
+
 python:
   - "3.5"
   - "3.6"
+  
+before_install:
+  - sudo pip3 install pytest-cov
+  
 env:
   - PYTHONPATH="."
+  
 script: pytest
+
+after_success:
+  - pytest --cov=./
