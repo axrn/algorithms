@@ -5,7 +5,7 @@ python:
   - "3.6"
   
 before_install:
-  - sudo pip3 install pytest-cov
+  - pip install pytest-cov
   
 env:
   - PYTHONPATH="."
