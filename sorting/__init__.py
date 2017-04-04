@@ -1,1 +1,1 @@
-__all__ = ["bubble_sort"]
+__all__ = ["bubble_sort", "merge_sort"]
