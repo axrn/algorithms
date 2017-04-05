@@ -1,6 +1,6 @@
 def sort(arr: list) -> list:
     """Merge sort recursive implementation:
-    Time complexity O(n log(n)), Memory O(n), Stable
+    Time complexity O(n log n), Memory O(n), Stable
     """
     if len(arr) <= 1:
         return arr
