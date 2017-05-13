@@ -81,6 +81,7 @@ class BST:
                     break
 
     def __height_update(self, added_node: Node):
+        print(" from ", added_node)
         if added_node.parent.left and added_node.parent.right:
             return
 
@@ -90,6 +91,8 @@ class BST:
             right_subtree_height = parent.right.height if parent.right else 0
             if abs(left_subtree_height - right_subtree_height) > 1:
                 self.balance(parent)
+                if added_node.value == 11:
+                    print(self.__repr__())
                 continue
             parent.height = max(left_subtree_height, right_subtree_height) + 1
             parent = parent.parent
@@ -119,18 +122,46 @@ class BST:
                 self.right_rotate(node)
 
     def double_left_rotate(self, node: Node):
-        node.right.left.left = node
-        node.right.left.left.right = None
+        if node.parent is None:
+            bst.root = node.right.left
 
-        node.right.left.right = node.right
-        node.right.left.right.left = None
+        a = node
+        c = a.right
+        b = c.left
 
-        node.right.left.parent = node.parent
-        node.right.left.left.parent = node.right.left
-        node.right.left.right.parent = node.right.left
+        b.parent = a.parent
+        a.parent = b
+        b.left = a
+        a.right = None
+
+        c.left = None
+        c.parent = b
+        c.left = b.right
+        b.right = c
+
+        a.height -= 2
+        c.height -= 1
 
     def double_right_rotate(self, node: Node):
-        pass
+        if node.parent is None:
+            bst.root = node.left.right
+
+        a = node
+        c = a.left
+        b = c.right
+
+        b.parent = a.parent
+        a.parent = b
+        b.right = a
+        a.left = None
+
+        c.right = None
+        c.parent = b
+        c.right = b.left
+        b.left = c
+
+        a.height -= 2
+        c.height -= 1
 
     def left_rotate(self, node: Node):
         if not node.parent:
@@ -146,7 +177,7 @@ class BST:
         node.right.left = node
         node.parent = node.right
         node.right = None
-        node.height = 1
+        node.height -= 2
 
     def right_rotate(self, node: Node):
         if not node.parent:
@@ -162,12 +193,25 @@ class BST:
         node.left.right = node
         node.parent = node.left
         node.left = None
-        node.height = 1
+        node.height -= 2
 
 
 bst = BST(Node(10))
+bst.add(Node(5))
+bst.add(Node(7))
+bst.add(Node(53))
+bst.add(Node(76))
+bst.add(Node(23))
+bst.add(Node(1))
 bst.add(Node(15))
-bst.add(Node(13))
-
 print(bst)
+# bst.add(Node(11))
+# bst.add(Node(8))
+
+# bst.add(Node(9))
+# bst.add(Node(8))
+# bst.add(Node(7))
+# bst.add(Node(6))
+
+# print(bst)
 
