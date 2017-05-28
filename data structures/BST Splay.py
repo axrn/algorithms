@@ -1,6 +1,3 @@
-import sys
-
-
 class Node:
     __slots__ = ["value", "parent", "left", "right"]
 
@@ -33,6 +30,8 @@ class Node:
 class BST:
     def __init__(self, root: Node):
         self.root = root
+        if self.root is not None:
+            self.root.parent = None
 
     def __repr__(self):
         result = """
@@ -121,14 +120,53 @@ class BST:
 
             cur_node = cur_node.left if x < cur_node else cur_node.right
 
-    def very_left(self):
+    def min(self):
         if self.root is None:
             return
         leftest = self.root
         while leftest.left:
             leftest = leftest.left
-
         return leftest
+
+    def max(self):
+        if self.root is None:
+            return
+        rightest = self.root
+        while rightest.right:
+            rightest = rightest.right
+        return rightest
+
+    def merge(self, second: 'BST'):
+        if self.max() < second.min():
+            self.splay(self.max())
+            self.root.right = second.root
+            second.root.parent = self.root
+        else:
+            second.splay(second.max())
+            second.root.right = self.root
+            self.root.parent = second.root
+            self.root = second.root
+
+    def delete(self, x: Node):
+        self.search(x)
+        left = self.root.left
+        right = self.root.right
+
+        if left is None and right is None:
+            self.root = None
+            return
+        if left is None:
+            self.root = right
+            self.root.parent = None
+            return
+        if right is None:
+            self.root = left
+            self.root.parent = None
+            return
+
+        self.root = left
+        self.root.parent = None
+        self.merge(BST(right))
 
     @staticmethod
     def zig(x: Node):
@@ -236,19 +274,4 @@ class BST:
         x.left = g
         g.parent = x
 
-
-from random import randrange
-bst = BST(Node(20))
-bst.add(Node(randrange(50)))
-bst.add(Node(randrange(50)))
-bst.add(Node(randrange(50)))
-bst.add(Node(randrange(50)))
-bst.add(Node(randrange(50)))
-bst.add(Node(randrange(50)))
-bst.add(Node(randrange(50)))
-bst.add(Node(randrange(50)))
-bst.add(Node(randrange(50)))
-bst.add(Node(randrange(50)))
-
-print(bst)
 
