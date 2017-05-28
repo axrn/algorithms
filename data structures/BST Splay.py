@@ -1,11 +1,17 @@
 class Node:
-    __slots__ = ["value", "parent", "left", "right"]
+    __slots__ = ["value", "parent", "left", "right", "sum"]
+
+    def update_sum(self):
+        ls = 0 if self.left is None else self.left.sum
+        rs = 0 if self.right is None else self.right.sum
+        self.sum = self.value + ls + rs
 
     def __init__(self, value: int) -> None:
         self.value = value
         self.parent = None
         self.left = None
         self.right = None
+        self.sum = value
 
     def __lt__(self, other: 'Node') -> bool:
         return self.value < other.value
@@ -24,7 +30,7 @@ class Node:
         if self.parent:
             p = self.parent.value
             r_or_l = "lc" if self == self.parent.left else "rc"
-        return "{}|{}{}".format(self.value, r_or_l, p)
+        return "{} s{}".format(self.value, self.sum)
 
 
 class BST:
@@ -73,6 +79,7 @@ class BST:
                 else:
                     cur_node.left = new_node
                     new_node.parent = cur_node
+                    cur_node.sum += new_node.value
                     self.splay(new_node)
                     break
 
@@ -83,6 +90,7 @@ class BST:
                 else:
                     cur_node.right = new_node
                     new_node.parent = cur_node
+                    cur_node.sum += new_node.value
                     self.splay(new_node)
                     break
 
@@ -116,6 +124,16 @@ class BST:
                 return False
             if x == cur_node:
                 self.splay(cur_node)
+                return True
+
+            cur_node = cur_node.left if x < cur_node else cur_node.right
+
+    def search_no_splay(self, x: Node) -> bool:
+        cur_node = self.root
+        while True:
+            if not cur_node:
+                return False
+            if x == cur_node:
                 return True
 
             cur_node = cur_node.left if x < cur_node else cur_node.right
@@ -176,6 +194,8 @@ class BST:
         p.left = x.right
         if x.right: x.right.parent = p
         x.right = p
+        p.update_sum()
+        x.update_sum()
 
     @staticmethod
     def zag(x: Node):
@@ -185,6 +205,8 @@ class BST:
         p.right = x.left
         if x.left: x.left.parent = p
         x.left = p
+        p.update_sum()
+        x.update_sum()
 
     @staticmethod
     def zigzig(x: Node):
@@ -207,6 +229,9 @@ class BST:
         if p.right: p.right.parent = g
         p.right = g
         g.parent = p
+        g.update_sum()
+        p.update_sum()
+        x.update_sum()
 
     @staticmethod
     def zagzag(x: Node):
@@ -229,6 +254,9 @@ class BST:
         if p.left: p.left.parent = g
         p.left = g
         g.parent = p
+        g.update_sum()
+        p.update_sum()
+        x.update_sum()
 
     @staticmethod
     def zigzag(x: Node):
@@ -251,6 +279,9 @@ class BST:
         if x.right: x.right.parent = g
         x.right = g
         g.parent = x
+        g.update_sum()
+        p.update_sum()
+        x.update_sum()
 
     @staticmethod
     def zagzig(x: Node):
@@ -273,5 +304,7 @@ class BST:
         if x.left: x.left.parent = g
         x.left = g
         g.parent = x
-
+        g.update_sum()
+        p.update_sum()
+        x.update_sum()
 
